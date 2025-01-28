@@ -8,108 +8,86 @@
 
 /*-------------------------------- Functions --------------------------------*/
 const buttons = document.querySelectorAll('.row');
-const calculator = document.querySelector('.calculator');
-const display = document.querySelector('.display');
-const clearButton = document.querySelector('.clear');
-const equalButton = document.querySelector('.equal');
-const operatorButtons = document.querySelectorAll('.operator');
-const numberButtons = document.querySelectorAll('.number');
-const decimalButton = document.querySelector('.decimal');
-let operator = null;
-let firstOperand = null;
-let secondOperand = null;
-let currentInput = null;
+//const calculator = document.querySelector('#calculator');
+const display = document.querySelector('#display');
+
+let num1 = '';
+let num2 = '';
+let operator = '';
 let result = null;
 
-function clearCalculator() {
-    currentInput = '';
-    operator = null;
-    firstOperand = null;
-    secondOperand = null;
-    result = null;
-    updateDisplay('');
-}
-
-function updateDisplay(value) {
-    display.textContent = value || '';
-}
-
-function calculateResult() {
-    const num1 = parseFloat(firstOperand);
-    const num2 = parseFloat(secondOperand);
-
-    if ( operator === null || firstOperand === null || secondOperand === null ) {
-        return;
-
-    }  if (operator === '+') {
-            result = num1 + num2;
-        } else if (operator === '-') {
-            result = num1 - num2;
-        } else if (operator === '*') {
-            result = num1 * num2;
-        } else if (operator === '/') {
-            result = num1 / num2;
-        }
-    }
-
-function handleNumberClick(value) {
-    currentInput += value;
-    updateDisplay(currentInput);
-}
-
-function handleOperatorClick(value) {
-    if (firstOperand === null) {
-        firstOperand = currentInput;
-        operator = value;
-        currentInput = '';
-    }
-}
-
-function handleEqualClick() {
-    secondOperand = currentInput;
-    calculateResult();
-    updateDisplay(result);
-    currentInput = result;
-    firstOperand = result;
-    operator = null;
-}
-
-function handleButtonClick(event) {
-    const value = event.target.textContent;
-
-    if (event.target.classList.contains('number')) {
-        handleNumberClick(value);
-    } else if (event.target.classList.contains('operator')) {
-        handleOperatorClick(value);
-    } else if (event.target.classList.contains('equal')) {
-        handleEqualClick();
-    } else if (event.target.classList.contains('clear')) {
-        clearCalculator();
-    }
-}
-
+//add events to buttons
 buttons.forEach((button) => {
-    button.addEventListener('click', handleButtonClick ) });
+    button.addEventListener('click', (event) => {
+        const value = event.target.innerText;
+      // This log is for testing purposes to verify we're getting the correct value
 
-  /*calculator.addEventListener('click', (event) => {
-    // This log is for testing purposes to verify we're getting the correct value
-    // You have to click a button to see this log
-    console.log(event.target.innerText);
-  
-    // Example
-    if (event.target.classList.contains('number')) {
-      // Do something with a number
+    // If it's a number 
+    if (!isNaN(value)) {
+         if (operator) {
+             num2 += value;
+             } else {
+                 num1 += value;
+                 } updateDisplay();
     }
-  
-    // Example
-    if (event.target.innerText === '*') {
-      // Do something with this operator
+    // If it's an operator 
+    if (['+', '-', '*', '/'].includes(value)) { 
+        if (num1 && !operator) { 
+            operator = value;
+         } 
+         updateDisplay();
     }
-  });
-
-
-
-
-
-
-    
+    // If it's "=" 
+    if (value === '=') { 
+        calculateResult(); 
+        updateDisplay(); 
+    } 
+    //If it's "C" (Clear) 
+    if (value === 'C') { 
+      clearCalculator(); 
+      updateDisplay(); 
+    } 
+});
+ }); 
+ 
+ // Update the display 
+ function updateDisplay() { 
+    if (result != null){
+        display.innerText = result;
+    } else{
+    display.innerText = num2 || operator || num1 || '0'; 
+}
+ }
+ // Perform the calculation 
+ function calculateResult() { 
+    if (num1 && num2 && operator) {
+         const n1 = parseFloat(num1); 
+         const n2 = parseFloat(num2); 
+         
+         switch (operator) {
+             case '+': 
+             result = n1 + n2; 
+             break; case '-': 
+             result = n1 - n2; 
+             break; 
+             case '*':
+             result = n1 * n2;
+             break;
+             case '/': 
+             result = n2 === 0 ? 'Error' : n1 / n2;
+              break; 
+            } 
+            
+            // Save the result and reset other variables 
+            num1 = result.toString(); 
+            num2 = ''; 
+            operator = ''; 
+        } 
+     } 
+    // Clear the calculator 
+    function clearCalculator() { 
+        num1 = ''; 
+        num2 = ''; 
+        operator = ''; 
+        result = null; 
+    }
