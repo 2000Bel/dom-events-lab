@@ -9,7 +9,7 @@
 /*-------------------------------- Functions --------------------------------*/
 const buttons = document.querySelectorAll('.row');
 //const calculator = document.querySelector('#calculator');
-const display = document.querySelector('#display');
+const display = document.querySelector('.display');
 
 let num1 = '';
 let num2 = '';
